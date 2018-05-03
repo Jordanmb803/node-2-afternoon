@@ -1,0 +1,25 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const massive = require('massive');
+const cors = require('cors');
+require('dotenv').config();
+const pc = require('./products_controller');
+
+const app = express();
+const port = 3000;
+
+app.use(bodyParser.json());
+
+massive(process.env.CONNECTION_STRING).then( dbInstance =>{
+    app.set('db', dbInstance)
+    
+})
+
+app.get('/api/products', pc.getAll);
+app.get('/api/product/:id', pc.getOne);
+app.put('/api/product/:id', pc.update);
+app.post('/api/product', pc.create);
+app.delete('/api/product/:id', pc.delete);
+
+app.listen(port, () => console.log(`Port ${ port }, is now listening`))
+
